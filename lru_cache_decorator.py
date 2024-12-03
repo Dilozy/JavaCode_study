@@ -1,6 +1,5 @@
 import functools
 import unittest.mock
-from collections import OrderedDict
 
 
 def lru_cache(function=None, *, maxsize=None):
@@ -11,7 +10,7 @@ def lru_cache(function=None, *, maxsize=None):
     Параметр function используем для того, чтобы при использовании декоратора без скобок,
     задекорированная функция передавалась в этот параметр
     """
-    cache = OrderedDict()
+    cache = {}
 
     def decorator(func):
         @functools.wraps(func)
@@ -22,7 +21,7 @@ def lru_cache(function=None, *, maxsize=None):
                 result = func(*args, **kwargs)
 
                 if maxsize is not None and len(cache) == maxsize:
-                    cache.popitem(last=False)
+                    cache.pop(next(iter(cache)))
 
                 cache[func_args] = result
 
