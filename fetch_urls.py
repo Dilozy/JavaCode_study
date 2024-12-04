@@ -2,8 +2,8 @@ import asyncio
 import json
 
 import aiohttp
+from aiohttp.client_exceptions import ClientConnectorDNSError, ClientConnectorError
 
-from aiohttp.client_exceptions import ClientConnectorDNSError
 
 semaphore = asyncio.Semaphore(5)
 
@@ -23,7 +23,7 @@ async def fetch(url: str, session: aiohttp.client.ClientSession):
     try:
         async with session.get(url) as response:
             return {"url": url, "status_code": response.status}
-    except ClientConnectorDNSError:
+    except (ClientConnectorDNSError, ClientConnectorError):
         return {"url": url, "status_code": 0}
     except asyncio.TimeoutError:
         return {"url": url, "status_code": 408}
